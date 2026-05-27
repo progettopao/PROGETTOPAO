@@ -313,8 +313,7 @@ void MainWindow::addActivity() {
     // Campi per VehicleMaintenance
     QLineEdit *txtTarga = nullptr;
     QLineEdit *txtOfficina = nullptr;
-    QSpinBox *spinKm = nullptr; // Aggiunto qui per correggere l'errore di compilazione
-    QListWidget *listComponentiWidget = nullptr;
+   QListWidget *listComponentiWidget = nullptr;
 
 
     if (type == "HomeTask") {
