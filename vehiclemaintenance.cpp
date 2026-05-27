@@ -2,9 +2,8 @@
 #include <QJsonArray>
 
 VehicleMaintenance::VehicleMaintenance(const QString& id, const QString& titolo, const QString& descrizione, bool completata,
-                                       const QString& targa, int kmScadenza, const QString& officina)
-    : Abstract_Activity(id, titolo, descrizione, completata), targaVeicolo(targa),
-    chilometraggioScadenza(kmScadenza), officinaRiferimento(officina) {}
+                                       const QString& targa, const QString& officina)
+    : Abstract_Activity(id, titolo, descrizione, completata), targaVeicolo(targa), officinaRiferimento(officina) {}
 
 QString VehicleMaintenance::getTargaVeicolo() const { return targaVeicolo; }
 void VehicleMaintenance::setTargaVeicolo(const QString& targa) { targaVeicolo = targa; }
@@ -49,7 +48,6 @@ QJsonObject VehicleMaintenance::toJsonObject() const {
     QJsonObject json = Abstract_Activity::toJsonObject();
     json["tipo"] = "VehicleMaintenance";
     json["targaVeicolo"] = targaVeicolo;
-    json["chilometraggioScadenza"] = chilometraggioScadenza;
     json["officinaRiferimento"] = officinaRiferimento;
 
     QJsonArray arrayComp;
@@ -63,7 +61,6 @@ QJsonObject VehicleMaintenance::toJsonObject() const {
 void VehicleMaintenance::fromJsonObject(const QJsonObject& json) {
     Abstract_Activity::fromJsonObject(json);
     if (json.contains("targaVeicolo") && json["targaVeicolo"].isString()) targaVeicolo = json["targaVeicolo"].toString();
-    if (json.contains("chilometraggioScadenza") && json["chilometraggioScadenza"].isDouble()) chilometraggioScadenza = json["chilometraggioScadenza"].toInt();
     if (json.contains("officinaRiferimento") && json["officinaRiferimento"].isString()) officinaRiferimento = json["officinaRiferimento"].toString();
 
     componentiDaSostituire.clear();
@@ -83,7 +80,6 @@ void VehicleMaintenance::writeToXml(QXmlStreamWriter& writer) const {
     writer.writeTextElement("descrizione", getDescrizione());
     writer.writeTextElement("completata", isCompletata() ? "true" : "false");
     writer.writeTextElement("targaVeicolo", targaVeicolo);
-    writer.writeTextElement("chilometraggioScadenza", QString::number(chilometraggioScadenza));
     writer.writeTextElement("officinaRiferimento", officinaRiferimento);
 
     writer.writeStartElement("Componenti");
