@@ -1,0 +1,119 @@
+#include "activitydetailwidget.h"
+#include <QFormLayout>
+
+ActivityDetailWidget::ActivityDetailWidget(QWidget *parent)
+    : QWidget(parent), currentActivity(nullptr) {
+    
+    setupUI();
+    setupConnections();
+}
+
+void ActivityDetailWidget::setupUI() {
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+
+    // --- BARRA SUPERIORE (Navigazione e Azioni) ---
+    QHBoxLayout *topBarLayout = new QHBoxLayout();
+    
+    backButton = new QPushButton("← Torna alla Lista", this);
+    editButton = new QPushButton("📝 Modifica", this);
+    
+    topBarLayout->addWidget(backButton);
+    topBarLayout->addStretch(); // Spinge il tasto modifica sulla destra
+    topBarLayout->addWidget(editButton);
+    
+    mainLayout->addLayout(topBarLayout);
+
+    // --- AREA CENTRALE SCROLLABILE (Vincolo del professore) ---
+    scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame); // Rende l'area pulita senza bordi doppi
+    
+    contentWidget = new QWidget();
+    QVBoxLayout *contentLayout = new QVBoxLayout(contentWidget);
+    
+    // Titolo dell'attività (Grande e in evidenza)
+    titleLabel = new QLabel(this);
+    titleLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 15px;");
+    titleLabel->setWordWrap(true); // Se il titolo è lungo va a capo automaticamente
+    contentLayout->addWidget(titleLabel);
+    
+    // Gruppo Informazioni Generali
+    QLabel *lblSezioneGen = new QLabel("Informazioni Generali", this);
+    lblSezioneGen->setStyleSheet("font-size: 12px; font-weight: bold; color: #7f8c8d; text-transform: uppercase;");
+    contentLayout->addWidget(lblSezioneGen);
+    
+    generalDetailsLabel = new QLabel(this);
+    generalDetailsLabel->setStyleSheet("font-size: 14px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; border-left: 4px solid #3498db;");
+    generalDetailsLabel->setWordWrap(true);
+    contentLayout->addWidget(generalDetailsLabel);
+    
+    contentLayout->addSpacing(15); // Spazio tra le sezioni
+    
+    // Gruppo Specifico della Sottoclasse
+    QLabel *lblSezioneSpec = new QLabel("Dettagli Specifici Categoria", this);
+    lblSezioneSpec->setStyleSheet("font-size: 12px; font-weight: bold; color: #7f8c8d; text-transform: uppercase;");
+    contentLayout->addWidget(lblSezioneSpec);
+    
+    specificDetailsLabel = new QLabel(this);
+    specificDetailsLabel->setStyleSheet("font-size: 14px; padding: 10px; background-color: #f4f6f7; border-radius: 4px; border-left: 4px solid #2ecc71; font-family: monospace;");
+    specificDetailsLabel->setWordWrap(true);
+    contentLayout->addWidget(specificDetailsLabel);
+    
+    contentLayout->addStretch(); // Spinge tutto il testo verso l'alto
+    
+    scrollArea->setWidget(contentWidget);
+    mainLayout->addWidget(scrollArea);
+}
+
+void ActivityDetailWidget::setupConnections() {
+    // Quando l'utente clicca sul tasto indietro, emette il segnale verso la MainWindow per ricambiare pagina
+    connect(backButton, &QPushButton::clicked, this, &ActivityDetailWidget::backRequested);
+    
+    // Quando l'utente clicca su modifica, inoltra la richiesta passando l'attività corrente
+    connect(editButton, &QPushButton::clicked, this, [this]() {
+        if (currentActivity) {
+            emit editRequested(currentActivity);
+        }
+    });
+}
+
+// Configura l'attività corrente e avvia l'aggiornamento dei testi a schermo
+void ActivityDetailWidget::setActivity(Abstract_Activity *activity) {
+    currentActivity = activity;
+    updateContent();
+}
+
+// Rinfresca i testi delle Label sfruttando il polimorfismo a runtime
+void ActivityDetailWidget::updateContent() {
+    if (!currentActivity) {
+        titleLabel->setText("Nessuna attività selezionata.");
+        generalDetailsLabel->clear();
+        specificDetailsLabel->clear();
+        return;
+    }
+    
+    // 1. Popola il titolo
+    titleLabel->setText(currentActivity->getTitolo());
+    
+    // 2. Popola i dettagli generali (comuni a tutte le attività)
+    QString statoTesto = currentActivity->isCompletata() ? "Completata ✅" : "In Corso ⏳";
+    QString urgenzaTesto = currentActivity->isUrgente() ? "Sì 🔥" : "No";
+    
+    QString infoGenerali = QString(
+        "<b>Descrizione:</b> %1<br><br>"
+        "<b>Stato Corrente:</b> %2<br>"
+        "<b>Urgenza Assegnata:</b> %3"
+    ).arg(currentActivity->getDescrizione()).arg(statoTesto).arg(urgenzaTesto);
+    
+    generalDetailsLabel->setText(infoGenerali);
+    
+    // 3. POLIMORFISMO PURO (Vincolo 8): Invoca il metodo virtuale puro sovrascritto dalle 5 sottoclassi.
+    // Non sappiamo se sia un Bill o un HomeTask, risponderà l'oggetto corretto a runtime!
+    QString dettagliSpecifici = currentActivity->getDettagliSpecifici();
+    
+    if (dettagliSpecifici.isEmpty()) {
+        specificDetailsLabel->setText("Nessun dettaglio aggiuntivo disponibile per questa categoria.");
+    } else {
+        specificDetailsLabel->setText(dettagliSpecifici);
+    }
+}
