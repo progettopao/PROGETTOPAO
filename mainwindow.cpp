@@ -381,9 +381,7 @@ void MainWindow::addActivity() {
     } else if (type == "VehicleMaintenance") {
         txtTarga = new QLineEdit(&dialog);
         txtOfficina = new QLineEdit(&dialog);
-        spinKm = new QSpinBox(&dialog);
-        spinKm->setMaximum(999999);
-
+        
         formLayout->addRow("Targa Veicolo:", txtTarga);
         formLayout->addRow("Officina di Riferimento:", txtOfficina);
 
@@ -462,7 +460,7 @@ void MainWindow::addActivity() {
         } else if (type == "VehicleMaintenance") {
             // 1. Creiamo il task manutenzione auto con i campi base
             VehicleMaintenance *vMaintAct = new VehicleMaintenance(newId, txtTitolo->text(), txtDescrizione->text(), isCompletata,
-                                                                   txtTarga->text(), spinKm->value(), txtOfficina->text());
+                                                                   txtTarga->text(), txtOfficina->text());
             // 2. Estraiamo i pezzi scritti nella lista grafica e li salviamo dentro l'oggetto
             if (listComponentiWidget) {
                 for (int i = 0; i < listComponentiWidget->count(); ++i) {
