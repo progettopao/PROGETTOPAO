@@ -7,14 +7,13 @@
 class VehicleMaintenance : public Abstract_Activity {
 private:
     QString targaVeicolo;
-    int chilometraggioScadenza;
     QString officinaRiferimento;
     QStringList componentiDaSostituire;
 
 public:
     // Costruttore
     VehicleMaintenance(const QString& id, const QString& titolo, const QString& descrizione, bool completata,
-                       const QString& targa, int kmScadenza, const QString& officina);
+                       const QString& targa, const QString& officina);
 
     // Getter e Setter specifici
     QString getTargaVeicolo() const;
