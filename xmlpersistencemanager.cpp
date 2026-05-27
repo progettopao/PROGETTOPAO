@@ -101,7 +101,6 @@ Abstract_Activity* XmlPersistenceManager::parseActivity(QXmlStreamReader &xml) {
 
             // Campi specifici di VehicleMaintenance
             else if (tagName == "targaVeicolo") targa = xml.readElementText();
-            else if (tagName == "chilometraggioScadenza") kmScadenza = xml.readElementText().toInt();
             else if (tagName == "officinaRiferimento") officina = xml.readElementText();
             else if (tagName == "Componente") componenti.append(xml.readElementText());
 
