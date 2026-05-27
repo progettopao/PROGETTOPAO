@@ -27,6 +27,7 @@
 #include <QDoubleSpinBox>
 #include <QDateEdit>
 #include <QStatusBar>
+#include <QListWidget>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), currentFilePath("") { //costruttore
