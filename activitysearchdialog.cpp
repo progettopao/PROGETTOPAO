@@ -7,7 +7,7 @@
 #include "hometask.h"
 #include "vehiclemaintenance.h"
 #include "shoppingtask.h"
-#include "LeisureTimeTask.h"
+#include "leisuretimetask.h"
 
 ActivitySearchDialog::ActivitySearchDialog(const QVector<Abstract_Activity*>& activities, MainWindow *parent)
     : QDialog(parent), mainWindow(parent), allActivities(activities) {
