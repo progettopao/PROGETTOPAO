@@ -386,7 +386,6 @@ void MainWindow::addActivity() {
         spinKm->setMaximum(999999);
 
         formLayout->addRow("Targa Veicolo:", txtTarga);
-        formLayout->addRow("Chilometraggio Scadenza:", spinKm);
         formLayout->addRow("Officina di Riferimento:", txtOfficina);
 
         // --- INTERFACCIA DINAMICA PER I COMPONENTI VEICOLO ---
@@ -579,12 +578,9 @@ void MainWindow::editActivity(Abstract_Activity *activity) {
     } else if (VehicleMaintenance *vAct = dynamic_cast<VehicleMaintenance*>(activity)) {
         txtTarga = new QLineEdit(vAct->getTargaVeicolo(), &dialog);
         txtOfficina = new QLineEdit(vAct->getOfficinaRiferimento(), &dialog);
-        spinKm = new QSpinBox(&dialog);
-        spinKm->setMaximum(999999);
-        spinKm->setValue(vAct->getChilometraggioScadenza());
+        
 
         formLayout->addRow("Targa Veicolo:", txtTarga);
-        formLayout->addRow("Chilometraggio Scadenza:", spinKm);
         formLayout->addRow("Officina di Riferimento:", txtOfficina);
 
         listComponentiWidget = new QListWidget(&dialog);
@@ -655,7 +651,7 @@ void MainWindow::editActivity(Abstract_Activity *activity) {
         else if (VehicleMaintenance *vAct = dynamic_cast<VehicleMaintenance*>(activity)) {
             vAct->setTargaVeicolo(txtTarga->text());
             vAct->setOfficinaRiferimento(txtOfficina->text());
-            vAct->setChilometraggioScadenza(spinKm->value());
+            
         }
 
         // Rinfresca la grafica
