@@ -6,7 +6,7 @@
 #include "hometask.h"
 #include "vehiclemaintenance.h"
 #include "shoppingtask.h"
-#include "LeisureTimeTask.h"
+#include "leisuretimetask.h"
 
 #include <QHeaderView>
 #include <QMessageBox>
