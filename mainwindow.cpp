@@ -506,7 +506,7 @@ void MainWindow::editActivity(Abstract_Activity *activity) {
     QDoubleSpinBox *spinImporto = nullptr; QLineEdit *txtEnte = nullptr; QDateEdit *dateScadenza = nullptr; // Bill
     QLineEdit *txtCategoriaSvago = nullptr; QSpinBox *spinRelax = nullptr; QLineEdit *txtCompagnia = nullptr; // LeisureTimeTask
     QLineEdit *txtSupermercato = nullptr; QDoubleSpinBox *spinBudget = nullptr; QListWidget *listProdottiWidget = nullptr; // ShoppingTask
-    QLineEdit *txtTarga = nullptr; QSpinBox *spinKm = nullptr; QLineEdit *txtOfficina = nullptr; QListWidget *listComponentiWidget = nullptr; // VehicleMaintenance
+    QLineEdit *txtTarga = nullptr; QLineEdit *txtOfficina = nullptr; QListWidget *listComponentiWidget = nullptr; // VehicleMaintenance
 
     // --- 1. RICONOSCIMENTO DEL TIPO E POPOLAMENTO DATI TRAMITE DYNAMIC_CAST ---
     if (HomeTask *homeAct = dynamic_cast<HomeTask*>(activity)) {
