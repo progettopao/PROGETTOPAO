@@ -10,7 +10,7 @@
 #include <QString>
 #include <QVector>
 
-// Classi di persistenza (Richieste dal tuo .cpp attuale)
+// Classi di persistenza
 #include "jsonpersistencemanager.h"
 #include "xmlpersistencemanager.h"
 #include "abstract_activity.h"
@@ -52,16 +52,16 @@ public:
     QVector<Abstract_Activity*>& getActivityList();
 
 public slots:
-    // Slot di gestione del file (Barra dei menu)
-    void newLibrary();                        // Reset dell'applicazione per un nuovo progetto vuoto
-    void openLibrary();                       // Dialog di apertura file (Rileva in automatico JSON o XML)
-    void saveLibrary();                       // Salvataggio rapido sul file corrente
-    void saveLibraryAs();                     // Salvataggio con nome e scelta del formato (.json / .xml)
+   // Slot di gestione del file (Barra dei menu) - Commenti ripuliti da vecchi riferimenti
+    void newManager();                        // Reset dell'applicazione per un nuovo gestore attività vuoto
+    void openFile();                          // Dialog di apertura file (Rileva in automatico JSON o XML)
+    void saveFile();                          // Salvataggio rapido sul file corrente
+    void saveFileAs();                        // Salvataggio con nome e scelta del formato (.json / .xml)
 
-    // Slot di gestione delle attività (Interazione UI)
+  // Slot di gestione delle attività (Interazione UI)
     void addActivity();                               // Apre la dialog interattiva per creare un nuovo task
     void editActivity(Abstract_Activity *activity);   // Apre la dialog precompilata per modificare il task
-    void removeActivity(Abstract_Activity *activity); // Elimina un task chiedendo conferma
+    void removeActivity(Abstract_Activity *activity); // Elimina un task chiedendo conferma (Collegato al dettaglio widget)
 
     // Slot di navigazione dello StackedWidget
     void showActivityDetails(Abstract_Activity *activity); // Mostra i dettagli del task selezionato
