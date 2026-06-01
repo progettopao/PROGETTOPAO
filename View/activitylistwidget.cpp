@@ -1,7 +1,6 @@
 #include "activitylistwidget.h"
-#include "mainwindow.h" // Serve per poter invocare mainWindow->getActivityList()
+#include "mainwindow.h" 
 
-// Includiamo le classi concrete per i controlli di tipo con dynamic_cast
 #include "bill.h"
 #include "hometask.h"
 #include "vehiclemaintenance.h"
@@ -24,7 +23,7 @@ ActivityListWidget::ActivityListWidget(MainWindow *mainWin)
 void ActivityListWidget::setupUI() {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
-    // --- AREA FILTRI (Barra Superiore) ---
+    // AREA FILTRI (Barra Superiore)
     QHBoxLayout *filterLayout = new QHBoxLayout();
     
     filterLayout->addWidget(new QLabel("Visualizzazione:", this));
@@ -37,18 +36,18 @@ void ActivityListWidget::setupUI() {
     filterTypeCombo->addItems({"Tutte le categorie", "Bill", "HomeTask", "VehicleMaintenance", "ShoppingTask", "LeisureTimeTask"});
     filterLayout->addWidget(filterTypeCombo);
     
-    filterLayout->addStretch(); // Spinge i filtri a sinistra
+    filterLayout->addStretch(); 
     
     addButton = new QPushButton("Nuova Attività", this);
     filterLayout->addWidget(addButton);
     
     mainLayout->addLayout(filterLayout);
 
-    // --- TABELLA DATI (Area Centrale) ---
+    // TABELLA DATI (Area Centrale) 
     tableWidget = new QTableWidget(this);
     setupTableHeaders();
     
-    // Ottimizzazioni grafiche per la tabella
+    // Ottimizzazioni tabella
     tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows); // Seleziona la riga intera
     tableWidget->setSelectionMode(QAbstractItemView::SingleSelection); // Una sola riga selezionabile
     tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);   // Celle non modificabili direttamente con un click
@@ -91,12 +90,10 @@ void ActivityListWidget::updateActivityList() {
     for (Abstract_Activity* activity : activities) {
         if (!activity) continue;
         
-        // 1. Controllo Filtro Urgenza (Polimorfismo puro - Vincolo 8)
         if (filtroVisualizzazione == "Solo Urgenti" && !activity->isUrgente()) {
             continue; 
         }
         
-        // 2. Controllo Filtro Categoria tramite RTTI / dynamic_cast (Vincolo 9 - Niente stringhe nel flusso)
         QString stringaCategoria = "Generica";
         if (dynamic_cast<Bill*>(activity)) {
             stringaCategoria = "Bill";
@@ -115,7 +112,7 @@ void ActivityListWidget::updateActivityList() {
             continue;
         }
         
-        // 3. Inserimento grafico dei dati nella riga della tabella
+        // Inserimento grafico dei dati nella riga della tabella
         tableWidget->insertRow(row);
         
         // Cella ID
@@ -128,11 +125,11 @@ void ActivityListWidget::updateActivityList() {
         tableWidget->setItem(row, 2, new QTableWidgetItem(stringaCategoria));
         
         // Cella Stato (Completata o In Corso)
-        QString statoText = activity->isCompletata() ? "✅ Completata" : "⏳ In Corso";
+        QString statoText = activity->isCompletata() ? "Completata" : "In Corso";
         tableWidget->setItem(row, 3, new QTableWidgetItem(statoText));
         
         // Cella Urgenza (Polimorfica)
-        QString urgenzaText = activity->isUrgente() ? "🔥 URGENTE" : "Normale";
+        QString urgenzaText = activity->isUrgente() ? "URGENTE" : "Normale";
         tableWidget->setItem(row, 4, new QTableWidgetItem(urgenzaText));
         
         row++;
@@ -158,7 +155,7 @@ void ActivityListWidget::handleSelection() {
 
 // Slot attivato con il doppio click su una cella: apre direttamente la vista Dettaglio
 void ActivityListWidget::handleCellDoubleClick(int row, int column) {
-    Q_UNUSED(column); // Evita il warning di variabile non usata
+    Q_UNUSED(column);
     if (row < 0) return;
     
     QString id = tableWidget->item(row, 0)->text();
