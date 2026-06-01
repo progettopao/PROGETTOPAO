@@ -44,8 +44,13 @@ bool ShoppingTask::isUrgente() const {
 }
 
 QJsonObject ShoppingTask::toJsonObject() const {
-    QJsonObject json = Abstract_Activity::toJsonObject();
-    json["tipo"] = "ShoppingTask";
+    QJsonObject json;
+    json["att_type"] = "ShoppingTask"; // Chiave esplicita per il registro interno
+    json["id"] = getId();
+    json["titolo"] = getTitolo();
+    json["descrizione"] = getDescrizione();
+    json["completata"] = isCompletata();
+    // Campi specifici
     json["supermercatoConsigliato"] = supermercatoConsigliato;
     json["budgetMassimo"] = budgetMassimo;
 
@@ -57,20 +62,26 @@ QJsonObject ShoppingTask::toJsonObject() const {
     return json;
 }
 
-void ShoppingTask::fromJsonObject(const QJsonObject& json) {
-    Abstract_Activity::fromJsonObject(json);
-    if (json.contains("supermercatoConsigliato") && json["supermercatoConsigliato"].isString()) supermercatoConsigliato = json["supermercatoConsigliato"].toString();
-    if (json.contains("budgetMassimo") && json["budgetMassimo"].isDouble()) budgetMassimo = json["budgetMassimo"].toDouble();
+Abstract_Activity* ShoppingTask::cloneFromJson(const QJsonObject& json) const {
+    ShoppingTask* newTask = new ShoppingTask(
+        json["id"].toString(),
+        json["titolo"].toString(),
+        json["descrizione"].toString(),
+        json["completata"].toBool(),
+        json["supermercatoConsigliato"].toString(),
+        json["budgetMassimo"].toDouble()
+    );
 
-    listaProdotti.clear();
+    // Ricostruzione della lista interna di prodotti dal QJsonArray
     if (json.contains("listaProdotti") && json["listaProdotti"].isArray()) {
         QJsonArray arrayProd = json["listaProdotti"].toArray();
         for (int i = 0; i < arrayProd.size(); ++i) {
-            listaProdotti.append(arrayProd[i].toString());
+            newTask->aggiungiArticolo(arrayProd[i].toString());
         }
     }
-}
 
+    return newTask;
+}
 void ShoppingTask::writeToXml(QXmlStreamWriter& writer) const {
     writer.writeStartElement("Activity");
     writer.writeAttribute("type", "ShoppingTask");
