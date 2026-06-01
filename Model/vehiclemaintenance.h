@@ -34,7 +34,7 @@ public:
 
     // Override per la persistenza dati
     QJsonObject toJsonObject() const override;
-    void fromJsonObject(const QJsonObject& json) override;
+   Abstract_Activity* cloneFromJson(const QJsonObject& json) const override;
     void writeToXml(QXmlStreamWriter& writer) const override;
 };
 
