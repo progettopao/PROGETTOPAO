@@ -13,19 +13,18 @@ ActivitySearchDialog::ActivitySearchDialog(const QVector<Abstract_Activity*>& ac
     : QDialog(parent), mainWindow(parent), allActivities(activities) {
     
     setWindowTitle("Cerca Attività");
-    resize(600, 400); // Dimensione iniziale per la tabella
+    resize(600, 400);
 
     setupUI();
     setupConnections();
     
-    // Mostra inizialmente tutte le attività disponibili
     handleSearch("");
 }
 
 void ActivitySearchDialog::setupUI() {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
-    // --- BARRA DI RICERCA SUPERIORE ---
+    // BARRA DI RICERCA SUPERIORE 
     QHBoxLayout *searchLayout = new QHBoxLayout();
     searchLayout->addWidget(new QLabel("Cerca per titolo/descrizione:", this));
     
@@ -51,7 +50,6 @@ void ActivitySearchDialog::setupUI() {
     
     mainLayout->addWidget(resultsTable);
 
-    // PULSANTIERA
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     viewDetailsButton = new QPushButton("Visualizza Dettaglio", this);
     closeButton = new QPushButton("Chiudi", this);
@@ -64,7 +62,6 @@ void ActivitySearchDialog::setupUI() {
 }
 
 void ActivitySearchDialog::setupConnections() {
-    // Connessione per la ricerca "live": filtra mentre l'utente scrive
     connect(searchLineEdit, &QLineEdit::textChanged, this, &ActivitySearchDialog::handleSearch);
     
     // Connessione pulsanti
@@ -83,11 +80,8 @@ void ActivitySearchDialog::handleSearch(const QString &text) {
     filteredActivities.clear();
     QString query = text.trimmed().toLower();
 
-    // Cicla sul vettore originale ereditato dalla MainWindow
     for (Abstract_Activity *activity : allActivities) {
         if (!activity) continue;
-
-        // Se la query è vuota, teniamo tutto. Altrimenti controlliamo corrispondenze parziali
         if (query.isEmpty() || 
             activity->getTitolo().toLower().contains(query) || 
             activity->getDescrizione().toLower().contains(query)) {
@@ -99,7 +93,6 @@ void ActivitySearchDialog::handleSearch(const QString &text) {
     populateTable();
 }
 
-// Disegna graficamente i risultati filtrati a schermo
 void ActivitySearchDialog::populateTable() {
     resultsTable->setRowCount(0); // Svuota i vecchi record
 
@@ -107,7 +100,6 @@ void ActivitySearchDialog::populateTable() {
         Abstract_Activity *activity = filteredActivities[i];
         resultsTable->insertRow(i);
 
-        // Categoria giusta con dynamic_cast
         QString categoria = "Generica";
         if (dynamic_cast<Bill*>(activity))                   categoria = "Bill";
         else if (dynamic_cast<HomeTask*>(activity))           categoria = "HomeTask";
@@ -131,9 +123,6 @@ void ActivitySearchDialog::handleViewDetails() {
         QMessageBox::information(this, "Nessuna selezione", "Seleziona un'attività dalla tabella per vederne i dettagli.");
         return;
     }
-
-    // Recuperiamo l'oggetto corrispondente usando l'indice della riga della tabella, 
-    // che combacia perfettamente con la posizione nel vettore locale 'filteredActivities'
     Abstract_Activity *selectedActivity = filteredActivities[currentRow];
     
     if (selectedActivity && mainWindow) {
