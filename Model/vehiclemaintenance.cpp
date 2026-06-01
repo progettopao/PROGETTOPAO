@@ -45,8 +45,13 @@ bool VehicleMaintenance::isUrgente() const {
 }
 
 QJsonObject VehicleMaintenance::toJsonObject() const {
-    QJsonObject json = Abstract_Activity::toJsonObject();
-    json["tipo"] = "VehicleMaintenance";
+    QJsonObject json;
+    json["att_type"] = "VehicleMaintenance"; // Tag per il registro dei prototipi
+    json["id"] = getId();
+    json["titolo"] = getTitolo();
+    json["descrizione"] = getDescrizione();
+    json["completata"] = isCompletata();
+    // Campi specifici
     json["targaVeicolo"] = targaVeicolo;
     json["officinaRiferimento"] = officinaRiferimento;
 
@@ -57,19 +62,25 @@ QJsonObject VehicleMaintenance::toJsonObject() const {
     json["componentiDaSostituire"] = arrayComp;
     return json;
 }
+Abstract_Activity* VehicleMaintenance::cloneFromJson(const QJsonObject& json) const {
+    VehicleMaintenance* newMaint = new VehicleMaintenance(
+        json["id"].toString(),
+        json["titolo"].toString(),
+        json["descrizione"].toString(),
+        json["completata"].toBool(),
+        json["targaVeicolo"].toString(),
+        json["officinaRiferimento"].toString()
+    );
 
-void VehicleMaintenance::fromJsonObject(const QJsonObject& json) {
-    Abstract_Activity::fromJsonObject(json);
-    if (json.contains("targaVeicolo") && json["targaVeicolo"].isString()) targaVeicolo = json["targaVeicolo"].toString();
-    if (json.contains("officinaRiferimento") && json["officinaRiferimento"].isString()) officinaRiferimento = json["officinaRiferimento"].toString();
-
-    componentiDaSostituire.clear();
+    // Ripristino della QStringList interna di componenti
     if (json.contains("componentiDaSostituire") && json["componentiDaSostituire"].isArray()) {
         QJsonArray arrayComp = json["componentiDaSostituire"].toArray();
         for (int i = 0; i < arrayComp.size(); ++i) {
-            componentiDaSostituire.append(arrayComp[i].toString());
+            newMaint->aggiungiComponente(arrayComp[i].toString());
         }
     }
+
+    return newMaint;
 }
 
 void VehicleMaintenance::writeToXml(QXmlStreamWriter& writer) const {
