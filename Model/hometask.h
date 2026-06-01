@@ -27,10 +27,8 @@ public:
 
     // Override e metodi per la persistenza dati
     QJsonObject toJsonObject() const override;
+    Abstract_Activity* cloneFromJson(const QJsonObject &json) const override;
     void writeToXml(QXmlStreamWriter &writer) const override;
-
-    // Metodo Factory specifico per la ricostruzione da JSON
-    static HomeTask* fromJson(const QJsonObject &json);
 };
 
 #endif // HOMETASK_H
