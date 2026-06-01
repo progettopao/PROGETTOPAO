@@ -36,11 +36,10 @@ public:
     virtual bool isUrgente() const = 0; // Lasciato puro
 
     // Persistenza
-    virtual QJsonObject toJsonObject() const = 0;
-    virtual void fromJsonObject(const QJsonObject &json);
-    virtual void writeToXml(QXmlStreamWriter &writer) const = 0;
+    virtual QJsonObject toJsonObject() const; // Persistenza JSON
+    virtual void writeToXml(QXmlStreamWriter &writer) const = 0; // Persistenza XML
 
-    static Abstract_Activity* fromJson(const QJsonObject &json);
+   static Abstract_Activity* fromJson(const QJsonObject &json) //legge il tipo dal JSON e delega la creazione alla sottoclasse corretta
 };
 
 #endif // ABSTRACT_ACTIVITY_H
