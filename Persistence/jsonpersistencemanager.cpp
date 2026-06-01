@@ -1,4 +1,9 @@
 #include "jsonpersistencemanager.h"
+#include "hometask.h"
+#include "bill.h"
+#include "vehiclemaintenance.h"
+#include "shoppingtask.h"
+#include "leisuretimetask.h"
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -52,7 +57,9 @@ QJsonArray JsonPersistenceManager::activityListToJsonArray(const QVector<Abstrac
     QJsonArray array;
 
     for (const Abstract_Activity *activity : activityList) {
-        array.append(activity->toJsonObject());
+        if (activity) {
+            array.append(activity->toJsonObject());
+        }
     }
 
     return array;
@@ -63,7 +70,26 @@ QVector<Abstract_Activity*> JsonPersistenceManager::jsonArrayToActivityList(cons
 
     for (const QJsonValue &val : array) {
         if (val.isObject()) {
-            Abstract_Activity *activity = Abstract_Activity::fromJson(val.toObject());
+            QJsonObject obj = val.toObject();
+            
+            // Leggiamo la stringa salvata nel file JSON sotto la chiave "att_type"
+            QString type = obj["att_type"].toString();
+            Abstract_Activity* activity = nullptr;
+
+            // La scelta di quale oggetto allocare avviene qui, nel livello di persistenza,
+            // chiamando i cloni polimorfi delle classi figlie.
+            if (type == "Bill") {
+                activity = Bill().cloneFromJson(obj);
+            } else if (type == "HomeTask") {
+                activity = HomeTask().cloneFromJson(obj);
+            } else if (type == "VehicleMaintenance") {
+                activity = VehicleMaintenance().cloneFromJson(obj);
+            } else if (type == "ShoppingTask") {
+                activity = ShoppingTask().cloneFromJson(obj);
+            } else if (type == "LeisureTimeTask") {
+                activity = LeisureTimeTask().cloneFromJson(obj);
+            }
+
             if (activity) {
                 activityList.append(activity);
             }
