@@ -8,7 +8,7 @@
 #include "bill.h"
 #include "vehiclemaintenance.h"
 #include "shoppingtask.h"
-#include "leisuretimetask.h" // Nota: assicurati che il nome del file sia tutto minuscolo o coerente
+#include "leisuretimetask.h"
 
 //librerie di Qt
 #include <QMenuBar>
@@ -31,7 +31,6 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), currentFilePath("") { //costruttore
-    //chiami il costruttore della classe base e inzializzi currentFilePath
     setupUI(); //corpo del costruttore
     setupMenus();
     setupConnections();
@@ -76,55 +75,49 @@ void MainWindow::setupUI() {
 //MENU E TOOLBAR
 void MainWindow::setupMenus() {
     // Menu File
-    QMenu *fileMenu = menuBar()->addMenu("&File"); //CREA BARRA MENU DELLA FINESTRA E MENU FILE
-    // AZIONE "NUOVO"
+    QMenu *fileMenu = menuBar()->addMenu("&File"); 
+    
     QAction *newAct = fileMenu->addAction("&Nuovo", this, &MainWindow::newLibrary);
     newAct->setShortcut(QKeySequence::New);
-    // AZIONE "APRI"
+    
     QAction *openAct = fileMenu->addAction("&Apri...", this, &MainWindow::openLibrary);
     openAct->setShortcut(QKeySequence::Open);
-    // AZIONE "SALVA"
+    
     QAction *saveAct = fileMenu->addAction("&Salva", this, &MainWindow::saveLibrary);
     saveAct->setShortcut(QKeySequence::Save);
-    // AZIONE "SALVA CON NOME"
+    
     QAction *saveAsAct = fileMenu->addAction("Salva con &nome...", this, &MainWindow::saveLibraryAs);
     saveAsAct->setShortcut(QKeySequence::SaveAs);
 
-    // Inserisce una linea orizzontale nel menu PER SEPARARE LE AZIONI
     fileMenu->addSeparator();
 
-    // AZIONE "ESCI"
     QAction *exitAct = fileMenu->addAction("&Esci", this, &QWidget::close);
     exitAct->setShortcut(QKeySequence::Quit);
-
-    //MENU "MODIFICA"
+// MENU MODIFICA (Rimosse emoticon stringhe)
     QMenu *editMenu = menuBar()->addMenu("&Modifica");
-    // AZIONE "AGGIUNGI ATTIVITÀ"
-    QAction *addAct = editMenu->addAction("&Aggiungi Attività...", this, &MainWindow::addActivity);
+    
+    QAction *addAct = editMenu->addAction("&Aggiungi Attivita...", this, &MainWindow::addActivity);
     addAct->setShortcut(QKeySequence("Ctrl+N"));
 
-    // AZIONE "CERCA"
     QAction *searchAct = editMenu->addAction("&Cerca...", this, &MainWindow::search);
     searchAct->setShortcut(QKeySequence::Find);
 
-    // MENU "AIUTO"
+    // MENU AIUTO
     QMenu *helpMenu = menuBar()->addMenu("&Aiuto");
-    // AZIONE "INFO APPLICAZIONE"
     QAction *aboutAct = helpMenu->addAction("&Info sull'applicazione", this, &MainWindow::about);
 
     // Barra degli strumenti
     toolbar = addToolBar("Main Toolbar");
-    toolbar->addAction(newAct); //Aggiunge il pulsante "Nuovo"
-    toolbar->addAction(openAct); //Aggiunge il pulsante "Apri"
-    toolbar->addAction(saveAct); //Aggiunge il pulsante "Salva"
+    toolbar->addAction(newAct); 
+    toolbar->addAction(openAct); 
+    toolbar->addAction(saveAct); 
     toolbar->addSeparator();
-    toolbar->addAction(addAct); // Aggiunge il pulsante "Aggiungi Attività"
-    toolbar->addAction(searchAct); // Aggiunge il pulsante "Cerca"
+    toolbar->addAction(addAct); 
+    toolbar->addAction(searchAct); 
 }
 
-//un widget emette un evento e un altro reagisce
 void MainWindow::setupConnections() {
-    // Connessione dei segnali personalizzati provenienti dal ListWidget
+    // Connessione dei segnali provenienti dal ListWidget
     connect(listWidget, &ActivityListWidget::activitySelected,
             this, &MainWindow::showActivityDetails);
     connect(listWidget, &ActivityListWidget::editRequested,
@@ -137,6 +130,9 @@ void MainWindow::setupConnections() {
             this, &MainWindow::showActivityList);
     connect(detailWidget, &ActivityDetailWidget::editRequested,
             this, &MainWindow::editActivity);
+            
+    connect(detailWidget, &ActivityDetailWidget::deleteRequested,
+            this, &MainWindow::removeActivity);
 }
 
 //Gestisce il titolo finestra
