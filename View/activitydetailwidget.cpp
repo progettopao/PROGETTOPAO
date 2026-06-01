@@ -11,7 +11,7 @@ ActivityDetailWidget::ActivityDetailWidget(QWidget *parent)
 void ActivityDetailWidget::setupUI() {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
-    // BARRA SUPERIORE (Navigazione e Azioni) ---
+    // BARRA SUPERIORE (Navigazione e Azioni)
     QHBoxLayout *topBarLayout = new QHBoxLayout();
     
    backButton = new QPushButton("Torna alla Lista", this);
@@ -49,7 +49,7 @@ void ActivityDetailWidget::setupUI() {
     generalDetailsLabel->setWordWrap(true);
     contentLayout->addWidget(generalDetailsLabel);
     
-    contentLayout->addSpacing(15); // Spazio tra le sezioni
+    contentLayout->addSpacing(15); 
     
     // Gruppo Specifico della Sottoclasse
     QLabel *lblSezioneSpec = new QLabel("Dettagli Specifici Categoria", this);
@@ -61,7 +61,7 @@ void ActivityDetailWidget::setupUI() {
     specificDetailsLabel->setWordWrap(true);
     contentLayout->addWidget(specificDetailsLabel);
     
-    contentLayout->addStretch(); // Spinge tutto il testo verso l'alto
+    contentLayout->addStretch();
     
     scrollArea->setWidget(contentWidget);
     mainLayout->addWidget(scrollArea);
@@ -83,13 +83,11 @@ void ActivityDetailWidget::setupConnections() {
     });
 }
 
-// Configura l'attività corrente e avvia l'aggiornamento dei testi a schermo
 void ActivityDetailWidget::setActivity(Abstract_Activity *activity) {
     currentActivity = activity;
     updateContent();
 }
 
-// Rinfresca i testi delle Label sfruttando il polimorfismo a runtime
 void ActivityDetailWidget::updateContent() {
     if (!currentActivity) {
         titleLabel->setText("Nessuna attività selezionata.");
