@@ -24,9 +24,9 @@ private:
     
     QPushButton *backButton;
     QPushButton *editButton;
-    // Rimosso exportButton se non gestisci esportazioni singole, o mantenuto se serve
+    QPushButton *deleteButton;
     
-    Abstract_Activity *currentActivity; // Sostituisce currentMedia
+    Abstract_Activity *currentActivity;
     
     void setupUI();
     void setupConnections();
@@ -41,6 +41,7 @@ public:
 signals:
     void backRequested();
     void editRequested(Abstract_Activity *activity);
+    void deleteRequested(Abstract_Activity *activity);
 };
 
 #endif // ACTIVITYDETAILWIDGET_H
