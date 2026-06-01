@@ -31,7 +31,7 @@ bool HomeTask::isUrgente() const {
 
 QJsonObject HomeTask::toJsonObject() const {
     QJsonObject json;
-    json["att_type"] = "HomeTask"; // Inserisce direttamente la chiave per il registro
+    json["tipo"] = "HomeTask"; // Uniformato con le altre classi per il PersistenceManager
     json["id"] = getId();
     json["titolo"] = getTitolo();
     json["descrizione"] = getDescrizione();
@@ -42,17 +42,8 @@ QJsonObject HomeTask::toJsonObject() const {
     return json;
 }
 
+// Corretto l'errore di sintassi: ora il metodo è un blocco unico, valido e sicuro
 Abstract_Activity* HomeTask::cloneFromJson(const QJsonObject &json) const {
-    return new HomeTask(
-        json["id"].toString(),
-        json["titolo"].toString(),
-        json["descrizione"].toString(),
-        json["completata"].toBool(),
-        json["stanza"].toString(),
-        json["urgenza"].toInt()
-    );
-}
-
     QString id = json.contains("id") ? json["id"].toString() : "";
     QString titolo = json.contains("titolo") ? json["titolo"].toString() : "";
     QString descrizione = json.contains("descrizione") ? json["descrizione"].toString() : "";
