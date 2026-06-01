@@ -181,7 +181,7 @@ void MainWindow::openLibrary() {
         }
     }
 
-    // Vincolo 13: Dialog per selezionare dinamicamente file JSON o XML
+   
     QString filePath = QFileDialog::getOpenFileName(this, "Apri Archivio", "", "File di interscambio (*.json *.xml);;JSON (*.json);;XML (*.xml)");
     if (filePath.isEmpty()) {
         return;
@@ -268,13 +268,13 @@ void MainWindow::addActivity() {
         return;
     }
 
-    // Creiamo la Dialog pop-up generica
+    
     QDialog dialog(this);
     dialog.setWindowTitle("Aggiungi " + type);
     QVBoxLayout *mainLayout = new QVBoxLayout(&dialog);
     QFormLayout *formLayout = new QFormLayout();
 
-    // --- GENERAZIONE AUTOMATICA ID (Abstract_Activity) ---
+    
     QString newId = QString::number(QDateTime::currentMSecsSinceEpoch());
     QLineEdit *txtId = new QLineEdit(newId, &dialog);
 
@@ -381,7 +381,7 @@ void MainWindow::addActivity() {
         formLayout->addRow("Targa Veicolo:", txtTarga);
         formLayout->addRow("Officina di Riferimento:", txtOfficina);
 
-        // --- INTERFACCIA DINAMICA PER I COMPONENTI VEICOLO ---
+        // INTERFACCIA DINAMICA PER I COMPONENTI VEICOLO
         listComponentiWidget = new QListWidget(&dialog);
         listComponentiWidget->setMaximumHeight(100);
 
@@ -409,7 +409,7 @@ void MainWindow::addActivity() {
 
     mainLayout->addLayout(formLayout);
 
-    // --- PULSANTIERA DI CONFERMA ---
+    // PULSANTIERA DI CONFERMA
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     QPushButton *saveButton = new QPushButton("Salva", &dialog);
     QPushButton *cancelButton = new QPushButton("Annulla", &dialog);
@@ -661,7 +661,7 @@ void MainWindow::removeActivity(Abstract_Activity *activity) {
     if (!activity) return;
 
     QMessageBox::StandardButton reply = QMessageBox::question(this,
-                                                              "Elimina Attività", "Sei sicuro di voler rimuovere l'attività '" + activity->getTitolo() + "'?",
+                                                              "Elimina Attivita", "Sei sicuro di voler rimuovere l'attivita '" + activity->getTitolo() + "'?",
                                                               QMessageBox::Yes | QMessageBox::No);
 
     if (reply == QMessageBox::No) {
@@ -671,15 +671,17 @@ void MainWindow::removeActivity(Abstract_Activity *activity) {
     int index = activityList.indexOf(activity);
     if (index != -1) {
         activityList.removeAt(index);
-        delete activity; // Distrugge l'istanza dall'Heap ed evita Memory Leak
+        delete activity; // Evita Memory Leak
 
         listWidget->updateActivityList();
-        showActivityList(); // Riporta l'utente alla tabella principale
+        showActivityList(); // Torna alla lista principale
 
-        statusBar()->showMessage("Attività rimossa con successo", 3000);
+        // SALVATAGGIO AUTOMATICO: Sincronizza subito la modifica su file JSON/XML
+        saveLibrary();
+
+        statusBar()->showMessage("Attivita rimossa con successo", 3000);
     }
 }
-
 void MainWindow::showActivityDetails(Abstract_Activity *activity) {
     if (!activity) return;
 
