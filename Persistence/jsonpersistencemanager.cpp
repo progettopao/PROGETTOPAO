@@ -9,6 +9,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QTextStream>
+#include <QDate>
 
 JsonPersistenceManager::JsonPersistenceManager() {
 }
@@ -71,23 +72,31 @@ QVector<Abstract_Activity*> JsonPersistenceManager::jsonArrayToActivityList(cons
     for (const QJsonValue &val : array) {
         if (val.isObject()) {
             QJsonObject obj = val.toObject();
-            
+
             // Leggiamo la stringa salvata nel file JSON sotto la chiave "att_type"
             QString type = obj["att_type"].toString();
             Abstract_Activity* activity = nullptr;
 
-            // La scelta di quale oggetto allocare avviene qui, nel livello di persistenza,
-            // chiamando i cloni polimorfi delle classi figlie.
+            // RISOLUZIONE COMPILAZIONE: Usiamo dei prototipi locali fornendo argomenti di default
             if (type == "Bill") {
-                activity = Bill().cloneFromJson(obj);
-            } else if (type == "HomeTask") {
-                activity = HomeTask().cloneFromJson(obj);
-            } else if (type == "VehicleMaintenance") {
-                activity = VehicleMaintenance().cloneFromJson(obj);
-            } else if (type == "ShoppingTask") {
-                activity = ShoppingTask().cloneFromJson(obj);
-            } else if (type == "LeisureTimeTask") {
-                activity = LeisureTimeTask().cloneFromJson(obj);
+                Bill proto("", "", "", false, 0.0, "", QDate::currentDate());
+                activity = proto.cloneFromJson(obj);
+            }
+            else if (type == "HomeTask") {
+                HomeTask proto("", "", "", false, "", 1);
+                activity = proto.cloneFromJson(obj);
+            }
+            else if (type == "VehicleMaintenance") {
+                VehicleMaintenance proto("", "", "", false, "", "");
+                activity = proto.cloneFromJson(obj);
+            }
+            else if (type == "ShoppingTask") {
+                ShoppingTask proto("", "", "", false, "", 0.0);
+                activity = proto.cloneFromJson(obj);
+            }
+            else if (type == "LeisureTimeTask") {
+                LeisureTimeTask proto("", "", "", false, "", 0, "");
+                activity = proto.cloneFromJson(obj);
             }
 
             if (activity) {
