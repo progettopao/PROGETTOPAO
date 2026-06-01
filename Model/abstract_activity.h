@@ -36,7 +36,7 @@ public:
     virtual bool isUrgente() const = 0; // Lasciato puro
 
     // Persistenza
-    virtual QJsonObject toJsonObject() const;
+    virtual QJsonObject toJsonObject() const = 0;
     virtual void fromJsonObject(const QJsonObject &json);
     virtual void writeToXml(QXmlStreamWriter &writer) const = 0;
 
