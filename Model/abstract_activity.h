@@ -36,10 +36,12 @@ public:
     virtual bool isUrgente() const = 0; // Lasciato puro
 
     // Persistenza
-    virtual QJsonObject toJsonObject() const; // Persistenza JSON
+    virtual QJsonObject toJsonObject() const = 0;// Persistenza JSON
     virtual void writeToXml(QXmlStreamWriter &writer) const = 0; // Persistenza XML
 
-   static Abstract_Activity* fromJson(const QJsonObject &json) //legge il tipo dal JSON e delega la creazione alla sottoclasse corretta
+  // Il "Clone": Ogni classe concreta implementerà questo metodo per leggere il JSON 
+    // e restituire una nuova istanza di se stessa, senza usare costrutti di flusso esterni.
+    virtual Abstract_Activity* cloneFromJson(const QJsonObject &json) const = 0;
 };
 
 #endif // ABSTRACT_ACTIVITY_H
