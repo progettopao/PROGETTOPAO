@@ -30,21 +30,30 @@ bool Bill::isUrgente() const {
 }
 
 QJsonObject Bill::toJsonObject() const {
-    QJsonObject json = Abstract_Activity::toJsonObject();
-    json["tipo"] = "Bill";
+    QJsonObject json;
+    //senza gettype
+    json["att_type"] = "Bill"; 
+    json["id"] = getId();
+    json["titolo"] = getTitolo();
+    json["descrizione"] = getDescrizione();
+    json["completata"] = isCompletata();
+    // Campi specifici
     json["importo"] = importo;
     json["enteErogatore"] = enteErogatore;
     json["dataScadenza"] = dataScadenza.toString(Qt::ISODate);
     return json;
 }
 
-void Bill::fromJsonObject(const QJsonObject& json) {
-    Abstract_Activity::fromJsonObject(json);
-    if (json.contains("importo") && json["importo"].isDouble()) importo = json["importo"].toDouble();
-    if (json.contains("enteErogatore") && json["enteErogatore"].isString()) enteErogatore = json["enteErogatore"].toString();
-    if (json.contains("dataScadenza") && json["dataScadenza"].isString()) {
-        dataScadenza = QDate::fromString(json["dataScadenza"].toString(), Qt::ISODate);
-    }
+Abstract_Activity* Bill::cloneFromJson(const QJsonObject& json) const {
+    return new Bill(
+        json["id"].toString(),
+        json["titolo"].toString(),
+        json["descrizione"].toString(),
+        json["completata"].toBool(),
+        json["importo"].toDouble(),
+        json["enteErogatore"].toString(),
+        QDate::fromString(json["dataScadenza"].toString(), Qt::ISODate)
+    );
 }
 
 void Bill::writeToXml(QXmlStreamWriter& writer) const {
