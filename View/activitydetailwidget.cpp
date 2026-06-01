@@ -11,30 +11,32 @@ ActivityDetailWidget::ActivityDetailWidget(QWidget *parent)
 void ActivityDetailWidget::setupUI() {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
-    // --- BARRA SUPERIORE (Navigazione e Azioni) ---
+    // BARRA SUPERIORE (Navigazione e Azioni) ---
     QHBoxLayout *topBarLayout = new QHBoxLayout();
     
-    backButton = new QPushButton("← Torna alla Lista", this);
-    editButton = new QPushButton("📝 Modifica", this);
+   backButton = new QPushButton("Torna alla Lista", this);
+    editButton = new QPushButton("Modifica", this);
+    deleteButton = new QPushButton("Elimina", this);
     
     topBarLayout->addWidget(backButton);
-    topBarLayout->addStretch(); // Spinge il tasto modifica sulla destra
+    topBarLayout->addStretch(); // Spinge il tasto modifica e elimina sulla destra
     topBarLayout->addWidget(editButton);
+    topBarLayout->addWidget(deleteButton);
     
     mainLayout->addLayout(topBarLayout);
 
-    // --- AREA CENTRALE SCROLLABILE (Vincolo del professore) ---
-    scrollArea = new QScrollArea(this);
+    // AREA CENTRALE
+  scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameShape(QFrame::NoFrame); // Rende l'area pulita senza bordi doppi
+    scrollArea->setFrameShape(QFrame::NoFrame);
     
     contentWidget = new QWidget();
     QVBoxLayout *contentLayout = new QVBoxLayout(contentWidget);
     
-    // Titolo dell'attività (Grande e in evidenza)
-    titleLabel = new QLabel(this);
+    // Titolo dell'attività
+   titleLabel = new QLabel(this);
     titleLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 15px;");
-    titleLabel->setWordWrap(true); // Se il titolo è lungo va a capo automaticamente
+    titleLabel->setWordWrap(true);
     contentLayout->addWidget(titleLabel);
     
     // Gruppo Informazioni Generali
@@ -66,13 +68,17 @@ void ActivityDetailWidget::setupUI() {
 }
 
 void ActivityDetailWidget::setupConnections() {
-    // Quando l'utente clicca sul tasto indietro, emette il segnale verso la MainWindow per ricambiare pagina
     connect(backButton, &QPushButton::clicked, this, &ActivityDetailWidget::backRequested);
     
-    // Quando l'utente clicca su modifica, inoltra la richiesta passando l'attività corrente
     connect(editButton, &QPushButton::clicked, this, [this]() {
         if (currentActivity) {
             emit editRequested(currentActivity);
+        }
+    });
+
+    connect(deleteButton, &QPushButton::clicked, this, [this]() {
+        if (currentActivity) {
+            emit deleteRequested(currentActivity);
         }
     });
 }
@@ -96,8 +102,8 @@ void ActivityDetailWidget::updateContent() {
     titleLabel->setText(currentActivity->getTitolo());
     
     // 2. Popola i dettagli generali (comuni a tutte le attività)
-    QString statoTesto = currentActivity->isCompletata() ? "Completata ✅" : "In Corso ⏳";
-    QString urgenzaTesto = currentActivity->isUrgente() ? "Sì 🔥" : "No";
+    QString statoTesto = currentActivity->isCompletata() ? "Completata" : "In Corso";
+    QString urgenzaTesto = currentActivity->isUrgente() ? "Si" : "No";
     
     QString infoGenerali = QString(
         "<b>Descrizione:</b> %1<br><br>"
@@ -107,8 +113,6 @@ void ActivityDetailWidget::updateContent() {
     
     generalDetailsLabel->setText(infoGenerali);
     
-    // 3. POLIMORFISMO PURO (Vincolo 8): Invoca il metodo virtuale puro sovrascritto dalle 5 sottoclassi.
-    // Non sappiamo se sia un Bill o un HomeTask, risponderà l'oggetto corretto a runtime!
     QString dettagliSpecifici = currentActivity->getDettagliSpecifici();
     
     if (dettagliSpecifici.isEmpty()) {
