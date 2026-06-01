@@ -19,13 +19,11 @@ public:
     ActivityManager();
     ~ActivityManager();
 
-    // CRUD e gestione della collezione
     void addActivity(Abstract_Activity* activity);
     bool removeActivity(const QString& id);
     QVector<Abstract_Activity*> getActivities() const;
     Abstract_Activity* getActivityById(const QString& id) const;
 
-    // Filtri polimorfi per la GUI
     QVector<Abstract_Activity*> getUrgentActivities() const;
 
     template <typename T>
