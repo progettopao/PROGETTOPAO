@@ -1,7 +1,6 @@
 #include "activitymanager.h"
 #include <QFileInfo>
 
-// Includiamo le classi figlie nel .cpp per far funzionare il dynamic_cast nella GUI se serve
 #include "hometask.h"
 #include "bill.h"
 #include "vehiclemaintenance.h"
@@ -51,7 +50,6 @@ Abstract_Activity* ActivityManager::getActivityById(const QString& id) const {
     return nullptr;
 }
 
-// FILTRO POLIMORFO PURO (Vincolo 8)
 QVector<Abstract_Activity*> ActivityManager::getUrgentActivities() const {
     QVector<Abstract_Activity*> urgentList;
     for (Abstract_Activity* activity : activities) {
@@ -62,7 +60,6 @@ QVector<Abstract_Activity*> ActivityManager::getUrgentActivities() const {
     return urgentList;
 }
 
-// PERSISTENZA INTELLIGENTE
 bool ActivityManager::saveToFile(const QString& filePath) {
     QFileInfo fileInfo(filePath);
     QString ext = fileInfo.suffix().toLower();
@@ -91,8 +88,7 @@ bool ActivityManager::loadFromFile(const QString& filePath) {
         return false;
     }
 
-    // ROBUSTEZZA: Aggiorna la memoria SOLO se il file conteneva effettivamente qualcosa o era un file valido vuoto
-    // Evita di piallare i dati utente se si seleziona un file corrotto.
+
     if (loadedActivities.isEmpty() && !QFile::exists(filePath)) {
         return false;
     }
