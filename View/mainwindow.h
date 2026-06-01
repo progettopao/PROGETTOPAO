@@ -53,10 +53,10 @@ public:
 
 public slots:
    // Slot di gestione del file (Barra dei menu) - Commenti ripuliti da vecchi riferimenti
-    void newManager();                        // Reset dell'applicazione per un nuovo gestore attività vuoto
-    void openFile();                          // Dialog di apertura file (Rileva in automatico JSON o XML)
-    void saveFile();                          // Salvataggio rapido sul file corrente
-    void saveFileAs();                        // Salvataggio con nome e scelta del formato (.json / .xml)
+     void newLibrary();                        // Reset dell'applicazione per un nuovo gestore attività vuoto
+    void openLibrary();                          // Dialog di apertura file (Rileva in automatico JSON o XML)
+   void saveLibrary();                        // Salvataggio rapido sul file corrente
+     void saveLibraryAs();                              // Salvataggio con nome e scelta del formato (.json / .xml)
 
   // Slot di gestione delle attività (Interazione UI)
     void addActivity();                               // Apre la dialog interattiva per creare un nuovo task
