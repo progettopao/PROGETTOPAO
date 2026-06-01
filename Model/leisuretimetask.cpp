@@ -31,19 +31,29 @@ bool LeisureTimeTask::isUrgente() const {
 }
 
 QJsonObject LeisureTimeTask::toJsonObject() const {
-    QJsonObject json = Abstract_Activity::toJsonObject();
-    json["tipo"] = "LeisureTimeTask";
+    QJsonObject json;
+    json["att_type"] = "LeisureTimeTask";
+    json["id"] = getId();
+    json["titolo"] = getTitolo();
+    json["descrizione"] = getDescrizione();
+    json["completata"] = isCompletata();
+    // Campi specifici
     json["categoriaSvago"] = categoriaSvago;
     json["livelloRelax"] = livelloRelax;
     json["compagnia"] = compagnia;
     return json;
 }
 
-void LeisureTimeTask::fromJsonObject(const QJsonObject& json) {
-    Abstract_Activity::fromJsonObject(json);
-    if (json.contains("categoriaSvago") && json["categoriaSvago"].isString()) categoriaSvago = json["categoriaSvago"].toString();
-    if (json.contains("livelloRelax") && json["livelloRelax"].isDouble()) livelloRelax = json["livelloRelax"].toInt();
-    if (json.contains("compagnia") && json["compagnia"].isString()) compagnia = json["compagnia"].toString();
+Abstract_Activity* LeisureTimeTask::cloneFromJson(const QJsonObject& json) const {
+    return new LeisureTimeTask(
+        json["id"].toString(),
+        json["titolo"].toString(),
+        json["descrizione"].toString(),
+        json["completata"].toBool(),
+        json["categoriaSvago"].toString(),
+        json["livelloRelax"].toInt(),
+        json["compagnia"].toString()
+    );
 }
 
 void LeisureTimeTask::writeToXml(QXmlStreamWriter& writer) const {
