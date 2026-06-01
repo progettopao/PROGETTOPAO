@@ -30,17 +30,28 @@ bool HomeTask::isUrgente() const {
 }
 
 QJsonObject HomeTask::toJsonObject() const {
-    QJsonObject json = Abstract_Activity::toJsonObject();
-    json["tipo"] = "HomeTask";
+    QJsonObject json;
+    json["att_type"] = "HomeTask"; // Inserisce direttamente la chiave per il registro
+    json["id"] = getId();
+    json["titolo"] = getTitolo();
+    json["descrizione"] = getDescrizione();
+    json["completata"] = isCompletata();
+    // Campi specifici
     json["stanza"] = stanza;
     json["urgenza"] = urgenza;
     return json;
 }
 
-HomeTask* HomeTask::fromJson(const QJsonObject &json) {
-    if (!json.contains("tipo") || json["tipo"].toString() != "HomeTask") {
-        return nullptr;
-    }
+Abstract_Activity* HomeTask::cloneFromJson(const QJsonObject &json) const {
+    return new HomeTask(
+        json["id"].toString(),
+        json["titolo"].toString(),
+        json["descrizione"].toString(),
+        json["completata"].toBool(),
+        json["stanza"].toString(),
+        json["urgenza"].toInt()
+    );
+}
 
     QString id = json.contains("id") ? json["id"].toString() : "";
     QString titolo = json.contains("titolo") ? json["titolo"].toString() : "";
