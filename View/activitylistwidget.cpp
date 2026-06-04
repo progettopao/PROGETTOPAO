@@ -1,5 +1,5 @@
 #include "activitylistwidget.h"
-#include "mainwindow.h" 
+#include "mainwindow.h"
 
 #include "bill.h"
 #include "hometask.h"
@@ -12,10 +12,10 @@
 
 ActivityListWidget::ActivityListWidget(MainWindow *mainWin)
     : QWidget(mainWin), mainWindow(mainWin) {
-    
+
     setupUI();
     setupConnections();
-    
+
     // Al momento della creazione, popola la tabella con i dati correnti
     updateActivityList();
 }
@@ -25,34 +25,34 @@ void ActivityListWidget::setupUI() {
 
     // AREA FILTRI (Barra Superiore)
     QHBoxLayout *filterLayout = new QHBoxLayout();
-    
+
     filterLayout->addWidget(new QLabel("Visualizzazione:", this));
     viewModeCombo = new QComboBox(this);
     viewModeCombo->addItems({"Tutte le attività", "Solo Urgenti"});
     filterLayout->addWidget(viewModeCombo);
-    
+
     filterLayout->addWidget(new QLabel("Categoria:", this));
     filterTypeCombo = new QComboBox(this);
     filterTypeCombo->addItems({"Tutte le categorie", "Bill", "HomeTask", "VehicleMaintenance", "ShoppingTask", "LeisureTimeTask"});
     filterLayout->addWidget(filterTypeCombo);
-    
-    filterLayout->addStretch(); 
-    
+
+    filterLayout->addStretch();
+
     addButton = new QPushButton("Nuova Attività", this);
     filterLayout->addWidget(addButton);
-    
+
     mainLayout->addLayout(filterLayout);
 
-    // TABELLA DATI (Area Centrale) 
+    // TABELLA DATI (Area Centrale)
     tableWidget = new QTableWidget(this);
     setupTableHeaders();
-    
+
     // Ottimizzazioni tabella
     tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows); // Seleziona la riga intera
     tableWidget->setSelectionMode(QAbstractItemView::SingleSelection); // Una sola riga selezionabile
     tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);   // Celle non modificabili direttamente con un click
     tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); // Colonne auto-ridimensionabili
-    
+
     mainLayout->addWidget(tableWidget);
 }
 
@@ -67,10 +67,10 @@ void ActivityListWidget::setupConnections() {
     // Connessione dei filtri (scattano quando l'utente cambia selezione nei ComboBox)
     connect(viewModeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ActivityListWidget::changeViewMode);
     connect(filterTypeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ActivityListWidget::filterByType);
-    
+
     // Pulsante rapido per aggiungere attività (rimanda alla MainWindow)
     connect(addButton, &QPushButton::clicked, mainWindow, &MainWindow::addActivity);
-    
+
     // Gestione del click singolo (selezione) e del doppio click (apertura dettagli) sulla tabella
     connect(tableWidget, &QTableWidget::itemSelectionChanged, this, &ActivityListWidget::handleSelection);
     connect(tableWidget, &QTableWidget::cellDoubleClicked, this, &ActivityListWidget::handleCellDoubleClick);
@@ -79,21 +79,21 @@ void ActivityListWidget::setupConnections() {
 // IL CUORE DELLA VIEW: Prende i dati dal Modello e li trasforma in elementi grafici
 void ActivityListWidget::updateActivityList() {
     tableWidget->setRowCount(0); // Svuota completamente la tabella per ridisegnarla
-    
+
     // Recupera il riferimento costante al vettore di attività memorizzato nella MainWindow (Vincolo 7)
     const QVector<Abstract_Activity*>& activities = mainWindow->getActivityList();
-    
+
     QString filtroVisualizzazione = viewModeCombo->currentText();
     QString filtroCategoria = filterTypeCombo->currentText();
-    
+
     int row = 0;
     for (Abstract_Activity* activity : activities) {
         if (!activity) continue;
-        
+
         if (filtroVisualizzazione == "Solo Urgenti" && !activity->isUrgente()) {
-            continue; 
+            continue;
         }
-        
+
         QString stringaCategoria = "Generica";
         if (dynamic_cast<Bill*>(activity)) {
             stringaCategoria = "Bill";
@@ -106,32 +106,32 @@ void ActivityListWidget::updateActivityList() {
         } else if (dynamic_cast<LeisureTimeTask*>(activity)) {
             stringaCategoria = "LeisureTimeTask";
         }
-        
+
         // Se l'utente ha impostato una categoria specifica e questa non coincide con quella dell'oggetto, salta
         if (filtroCategoria != "Tutte le categorie" && filtroCategoria != stringaCategoria) {
             continue;
         }
-        
+
         // Inserimento grafico dei dati nella riga della tabella
         tableWidget->insertRow(row);
-        
+
         // Cella ID
         tableWidget->setItem(row, 0, new QTableWidgetItem(activity->getId()));
-        
+
         // Cella Titolo
         tableWidget->setItem(row, 1, new QTableWidgetItem(activity->getTitolo()));
-        
+
         // Cella Categoria (calcolata sopra)
         tableWidget->setItem(row, 2, new QTableWidgetItem(stringaCategoria));
-        
+
         // Cella Stato (Completata o In Corso)
         QString statoText = activity->isCompletata() ? "Completata" : "In Corso";
         tableWidget->setItem(row, 3, new QTableWidgetItem(statoText));
-        
+
         // Cella Urgenza (Polimorfica)
         QString urgenzaText = activity->isUrgente() ? "URGENTE" : "Normale";
         tableWidget->setItem(row, 4, new QTableWidgetItem(urgenzaText));
-        
+
         row++;
     }
 }
@@ -140,10 +140,10 @@ void ActivityListWidget::updateActivityList() {
 void ActivityListWidget::handleSelection() {
     int currentRow = tableWidget->currentRow();
     if (currentRow < 0) return;
-    
+
     // Recuperiamo l'ID dall'elemento della prima colonna della riga selezionata
     QString id = tableWidget->item(currentRow, 0)->text();
-    
+
     // Cerchiamo l'oggetto corrispondente nel vettore della MainWindow
     for (Abstract_Activity* activity : mainWindow->getActivityList()) {
         if (activity && activity->getId() == id) {
@@ -157,7 +157,7 @@ void ActivityListWidget::handleSelection() {
 void ActivityListWidget::handleCellDoubleClick(int row, int column) {
     Q_UNUSED(column);
     if (row < 0) return;
-    
+
     QString id = tableWidget->item(row, 0)->text();
     for (Abstract_Activity* activity : mainWindow->getActivityList()) {
         if (activity && activity->getId() == id) {
