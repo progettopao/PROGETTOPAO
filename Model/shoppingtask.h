@@ -11,8 +11,9 @@ private:
     QStringList listaProdotti;
 
 public:
+    // Costruttore AGGIORNATO: l'ultimo parametro ora è opzionale per non rompere cloneFromJson
     ShoppingTask(const QString& id, const QString& titolo, const QString& descrizione, bool completata,
-                 const QString& negozio, double budget);
+                 const QString& negozio, double budget, const QStringList& lista = QStringList());
 
     // Getter e Setter
     QString getSupermercatoConsigliato() const;
@@ -20,6 +21,7 @@ public:
     double getBudgetMassimo() const;
     void setBudgetMassimo(double budget);
     QStringList getListaProdotti() const;
+    void setListaProdotti(const QStringList& lista); // AGGIUNTO: richiesto da MainWindow
 
     void aggiungiArticolo(const QString& articolo);
     void spuntaArticolo(const QString& articolo);
