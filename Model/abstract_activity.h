@@ -39,7 +39,7 @@ public:
     virtual QJsonObject toJsonObject() const = 0;// Persistenza JSON
     virtual void writeToXml(QXmlStreamWriter &writer) const = 0; // Persistenza XML
 
-  // Il "Clone": Ogni classe concreta implementerà questo metodo per leggere il JSON 
+    // Il "Clone": Ogni classe concreta implementerà questo metodo per leggere il JSON
     // e restituire una nuova istanza di se stessa, senza usare costrutti di flusso esterni.
     virtual Abstract_Activity* cloneFromJson(const QJsonObject &json) const = 0;
 };
