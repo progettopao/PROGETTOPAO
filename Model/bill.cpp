@@ -21,7 +21,7 @@ QString Bill::getDettagliSpecifici() const {
     int giorni = giorniAllaScadenza();
     QString statoScadenza = (giorni < 0) ? QString("SCADUTA da %1 giorni").arg(qAbs(giorni)): QString("Mancano %1 giorni alla scadenza").arg(giorni);
     return QString("Importo: %1 €\nEnte: %2\nScadenza: %3 (%4)").arg(QString::number(importo, 'f', 2),enteErogatore,dataScadenza.toString("dd/MM/yyyy"),
-             statoScadenza);
+                                                                     statoScadenza);
 }
 
 
@@ -32,7 +32,7 @@ bool Bill::isUrgente() const {
 QJsonObject Bill::toJsonObject() const {
     QJsonObject json;
     //senza gettype
-    json["att_type"] = "Bill"; 
+    json["att_type"] = "Bill";
     json["id"] = getId();
     json["titolo"] = getTitolo();
     json["descrizione"] = getDescrizione();
@@ -53,7 +53,7 @@ Abstract_Activity* Bill::cloneFromJson(const QJsonObject& json) const {
         json["importo"].toDouble(),
         json["enteErogatore"].toString(),
         QDate::fromString(json["dataScadenza"].toString(), Qt::ISODate)
-    );
+        );
 }
 
 void Bill::writeToXml(QXmlStreamWriter& writer) const {
