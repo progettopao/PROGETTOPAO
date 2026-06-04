@@ -73,10 +73,11 @@ Abstract_Activity* XmlPersistenceManager::parseActivity(QXmlStreamReader &xml) {
     QString type = xml.attributes().value("type").toString();
     QString id, titolo, descrizione, stanza, targa, officina, ente, categoria, compagnia, supermercatoConsigliato;
     bool completata = false;
-    int urgenza = 1, kmScadenza = 0, relax = 1;
     double importo = 0.0, budgetMassimo = 0.0;
     QDate scadenza = QDate::currentDate();
     QStringList componenti, prodotti;
+    int urgenza = 1;  // Valore di default per HomeTask
+    int relax = 1;    // Valore di default per LeisureTimeTask
 
     while (!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name().toString() == "Activity")) {
         xml.readNext();
@@ -123,7 +124,7 @@ Abstract_Activity* XmlPersistenceManager::parseActivity(QXmlStreamReader &xml) {
         return new Bill(id, titolo, descrizione, completata, importo, ente, scadenza);
     }
     else if (type == "VehicleMaintenance") {
-        VehicleMaintenance* vm = new VehicleMaintenance(id, titolo, descrizione, completata, targa, kmScadenza, officina);
+        VehicleMaintenance* vm = new VehicleMaintenance(id, titolo, descrizione, completata, targa, officina);
         for (const QString& c : componenti) {
             vm->aggiungiComponente(c); //
         }
