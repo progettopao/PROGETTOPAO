@@ -11,28 +11,28 @@
 
 ActivitySearchDialog::ActivitySearchDialog(const QVector<Abstract_Activity*>& activities, MainWindow *parent)
     : QDialog(parent), mainWindow(parent), allActivities(activities) {
-    
+
     setWindowTitle("Cerca Attività");
     resize(600, 400);
 
     setupUI();
     setupConnections();
-    
+
     handleSearch("");
 }
 
 void ActivitySearchDialog::setupUI() {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
-    // BARRA DI RICERCA SUPERIORE 
+    // BARRA DI RICERCA SUPERIORE
     QHBoxLayout *searchLayout = new QHBoxLayout();
     searchLayout->addWidget(new QLabel("Cerca per titolo/descrizione:", this));
-    
+
     searchLineEdit = new QLineEdit(this);
     searchLineEdit->setPlaceholderText("Digita qualcosa per filtrare...");
     searchLineEdit->setClearButtonEnabled(true); // Aggiunge la "X" per svuotare la barra al volo
     searchLayout->addWidget(searchLineEdit);
-    
+
     mainLayout->addLayout(searchLayout);
 
     // TABELLA DEI RISULTATI
@@ -41,33 +41,33 @@ void ActivitySearchDialog::setupUI() {
     QStringList headers;
     headers << "ID" << "Titolo" << "Categoria" << "Stato";
     resultsTable->setHorizontalHeaderLabels(headers);
-    
+
     // Impostazioni tabella
     resultsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     resultsTable->setSelectionMode(QAbstractItemView::SingleSelection);
     resultsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     resultsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    
+
     mainLayout->addWidget(resultsTable);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     viewDetailsButton = new QPushButton("Visualizza Dettaglio", this);
     closeButton = new QPushButton("Chiudi", this);
-    
+
     buttonLayout->addWidget(viewDetailsButton);
     buttonLayout->addStretch();
     buttonLayout->addWidget(closeButton);
-    
+
     mainLayout->addLayout(buttonLayout);
 }
 
 void ActivitySearchDialog::setupConnections() {
     connect(searchLineEdit, &QLineEdit::textChanged, this, &ActivitySearchDialog::handleSearch);
-    
+
     // Connessione pulsanti
     connect(closeButton, &QPushButton::clicked, this, &QDialog::accept);
     connect(viewDetailsButton, &QPushButton::clicked, this, &ActivitySearchDialog::handleViewDetails);
-    
+
     // Doppio click su una riga apre direttamente i dettagli
     connect(resultsTable, &QTableWidget::cellDoubleClicked, this, [this](int row, int col) {
         Q_UNUSED(row); Q_UNUSED(col);
@@ -82,10 +82,10 @@ void ActivitySearchDialog::handleSearch(const QString &text) {
 
     for (Abstract_Activity *activity : allActivities) {
         if (!activity) continue;
-        if (query.isEmpty() || 
-            activity->getTitolo().toLower().contains(query) || 
+        if (query.isEmpty() ||
+            activity->getTitolo().toLower().contains(query) ||
             activity->getDescrizione().toLower().contains(query)) {
-            
+
             filteredActivities.append(activity); // Inserisce nel sotto-vettore locale
         }
     }
@@ -124,7 +124,7 @@ void ActivitySearchDialog::handleViewDetails() {
         return;
     }
     Abstract_Activity *selectedActivity = filteredActivities[currentRow];
-    
+
     if (selectedActivity && mainWindow) {
         mainWindow->showActivityDetails(selectedActivity); // Dice alla finestra principale di mostrare la scheda dettaglio
         accept(); // Chiude la dialog di ricerca
