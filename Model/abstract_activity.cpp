@@ -19,8 +19,3 @@ void Abstract_Activity::setTitolo(const QString &titolo) { this->titolo = titolo
 void Abstract_Activity::setDescrizione(const QString &descrizione) { this->descrizione = descrizione; }
 void Abstract_Activity::setCompletata(bool stato) { this->completata = stato; }
 void Abstract_Activity::completaAttivita() { this->completata = true; }
-
-// NOTA: I metodi 'toJsonObject()', 'cloneFromJson()' e 'writeToXml()' 
-// sono virtuali puri (= 0) nell'header, quindi NON devono essere implementati qui.
-
-
