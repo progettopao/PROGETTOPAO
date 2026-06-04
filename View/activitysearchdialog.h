@@ -11,6 +11,7 @@
 #include <QVector>
 #include "abstract_activity.h"
 #include "mainwindow.h"
+
 class MainWindow;
 
 class ActivitySearchDialog : public QDialog {
