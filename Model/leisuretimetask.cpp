@@ -53,7 +53,7 @@ Abstract_Activity* LeisureTimeTask::cloneFromJson(const QJsonObject& json) const
         json["categoriaSvago"].toString(),
         json["livelloRelax"].toInt(),
         json["compagnia"].toString()
-    );
+        );
 }
 
 void LeisureTimeTask::writeToXml(QXmlStreamWriter& writer) const {
