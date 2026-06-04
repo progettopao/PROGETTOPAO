@@ -11,9 +11,9 @@ private:
     QStringList componentiDaSostituire;
 
 public:
-    // Costruttore
+    // Costruttore AGGIORNATO: l'ultimo parametro è opzionale (= QStringList()) per compatibilità
     VehicleMaintenance(const QString& id, const QString& titolo, const QString& descrizione, bool completata,
-                       const QString& targa, const QString& officina);
+                       const QString& targa, const QString& officina, const QStringList& componenti = QStringList());
 
     // Getter e Setter specifici
     QString getTargaVeicolo() const;
@@ -23,6 +23,7 @@ public:
     void setOfficinaRiferimento(const QString& officina);
 
     QStringList getComponentiDaSostituire() const;
+    void setComponentiDaSostituire(const QStringList& componenti); // AGGIUNTO: serve a MainWindow per aggiornare la lista in blocco
 
     // Gestione della lista dinamica dei componenti
     void aggiungiComponente(const QString& componente);
@@ -34,7 +35,7 @@ public:
 
     // Override per la persistenza dati
     QJsonObject toJsonObject() const override;
-   Abstract_Activity* cloneFromJson(const QJsonObject& json) const override;
+    Abstract_Activity* cloneFromJson(const QJsonObject& json) const override;
     void writeToXml(QXmlStreamWriter& writer) const override;
 };
 
