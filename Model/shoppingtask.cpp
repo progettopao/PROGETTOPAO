@@ -1,9 +1,13 @@
 #include "shoppingtask.h"
 #include <QJsonArray>
 
+// Costruttore AGGIORNATO: accetta e assegna la lista passata in blocco
 ShoppingTask::ShoppingTask(const QString& id, const QString& titolo, const QString& descrizione, bool completata,
-                           const QString& negozio, double budget)
-    : Abstract_Activity(id, titolo, descrizione, completata), supermercatoConsigliato(negozio), budgetMassimo(budget) {}
+                           const QString& negozio, double budget, const QStringList& lista)
+    : Abstract_Activity(id, titolo, descrizione, completata),
+    supermercatoConsigliato(negozio),
+    budgetMassimo(budget),
+    listaProdotti(lista) {}
 
 QString ShoppingTask::getSupermercatoConsigliato() const { return supermercatoConsigliato; }
 void ShoppingTask::setSupermercatoConsigliato(const QString& negozio) { supermercatoConsigliato = negozio; }
@@ -12,6 +16,11 @@ double ShoppingTask::getBudgetMassimo() const { return budgetMassimo; }
 void ShoppingTask::setBudgetMassimo(double budget) { budgetMassimo = budget; }
 
 QStringList ShoppingTask::getListaProdotti() const { return listaProdotti; }
+
+// AGGIUNTO: implementazione del setter per consentire le modifiche da MainWindow
+void ShoppingTask::setListaProdotti(const QStringList& lista) {
+    listaProdotti = lista;
+}
 
 void ShoppingTask::aggiungiArticolo(const QString& articolo) {
     if (!articolo.isEmpty() && !listaProdotti.contains(articolo)) {
@@ -39,18 +48,16 @@ bool ShoppingTask::isUrgente() const {
     if (isCompletata()) {
         return false;
     }
-    // Diventa urgente se ci sono più di 5 prodotti da comprare
     return listaProdotti.size() >= 5;
 }
 
 QJsonObject ShoppingTask::toJsonObject() const {
     QJsonObject json;
-    json["att_type"] = "ShoppingTask"; // Chiave esplicita per il registro interno
+    json["att_type"] = "ShoppingTask";
     json["id"] = getId();
     json["titolo"] = getTitolo();
     json["descrizione"] = getDescrizione();
     json["completata"] = isCompletata();
-    // Campi specifici
     json["supermercatoConsigliato"] = supermercatoConsigliato;
     json["budgetMassimo"] = budgetMassimo;
 
@@ -63,6 +70,7 @@ QJsonObject ShoppingTask::toJsonObject() const {
 }
 
 Abstract_Activity* ShoppingTask::cloneFromJson(const QJsonObject& json) const {
+    // Lasciamo inalterato: l'assenza del settimo parametro userà automaticamente la lista vuota di default
     ShoppingTask* newTask = new ShoppingTask(
         json["id"].toString(),
         json["titolo"].toString(),
@@ -70,9 +78,8 @@ Abstract_Activity* ShoppingTask::cloneFromJson(const QJsonObject& json) const {
         json["completata"].toBool(),
         json["supermercatoConsigliato"].toString(),
         json["budgetMassimo"].toDouble()
-    );
+        );
 
-    // Ricostruzione della lista interna di prodotti dal QJsonArray
     if (json.contains("listaProdotti") && json["listaProdotti"].isArray()) {
         QJsonArray arrayProd = json["listaProdotti"].toArray();
         for (int i = 0; i < arrayProd.size(); ++i) {
@@ -82,6 +89,7 @@ Abstract_Activity* ShoppingTask::cloneFromJson(const QJsonObject& json) const {
 
     return newTask;
 }
+
 void ShoppingTask::writeToXml(QXmlStreamWriter& writer) const {
     writer.writeStartElement("Activity");
     writer.writeAttribute("type", "ShoppingTask");
@@ -96,6 +104,6 @@ void ShoppingTask::writeToXml(QXmlStreamWriter& writer) const {
     for (const QString& p : listaProdotti) {
         writer.writeTextElement("Prodotto", p);
     }
-    writer.writeEndElement(); // Fine Prodotti
-    writer.writeEndElement(); // Fine Activity
+    writer.writeEndElement();
+    writer.writeEndElement();
 }
