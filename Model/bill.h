@@ -27,7 +27,7 @@ public:
     // Override
     QString getDettagliSpecifici() const override;
     bool isUrgente() const override;
-    
+
     QJsonObject toJsonObject() const override;
     Abstract_Activity* cloneFromJson(const QJsonObject& json) const override;
     void writeToXml(QXmlStreamWriter& writer) const override;
