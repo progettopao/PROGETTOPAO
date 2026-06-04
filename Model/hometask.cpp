@@ -31,7 +31,7 @@ bool HomeTask::isUrgente() const {
 
 QJsonObject HomeTask::toJsonObject() const {
     QJsonObject json;
-    json["att_type"] = "HomeTask"; // Uniformato con le altre classi per il PersistenceManager
+    json["att_type"] = "HomeTask";
     json["id"] = getId();
     json["titolo"] = getTitolo();
     json["descrizione"] = getDescrizione();
