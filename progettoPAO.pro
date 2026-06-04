@@ -1,17 +1,16 @@
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += core gui widgets
 
 CONFIG += c++17
 
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+# Elimina il flag ereditato AGL senza rompere i componenti grafici su macOS
+macx: LIBS -= -framework AGL
 
 SOURCES += \
     abstract_activity.cpp \
+    activitydetailwidget.cpp \
     activitylistwidget.cpp \
     activitymanager.cpp \
+    activitysearchdialog.cpp \
     bill.cpp \
     hometask.cpp \
     jsonpersistencemanager.cpp \
@@ -24,8 +23,10 @@ SOURCES += \
 
 HEADERS += \
     abstract_activity.h \
+    activitydetailwidget.h \
     activitylistwidget.h \
     activitymanager.h \
+    activitysearchdialog.h \
     bill.h \
     hometask.h \
     jsonpersistencemanager.h \
@@ -42,3 +43,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+# Dice a qmake di ignorare OpenGL su macOS
+CONFIG -= opengl
+QMAKE_LFLAGS += -F/Users/sofia/Desktop/FakeFrameworks
